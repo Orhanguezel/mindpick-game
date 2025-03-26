@@ -36,6 +36,7 @@ async function seedAnswers() {
       if (isCorrect) userScore++;
     }
 
+
     await User.findByIdAndUpdate(user._id, { score: userScore });
   }
 
