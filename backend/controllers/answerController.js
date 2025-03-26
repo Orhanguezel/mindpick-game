@@ -37,3 +37,24 @@ export const submitAnswer = async (req, res) => {
   }
 };
 
+
+export const getUserAnswers = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const answers = await Answer.find({ userId }).populate("questionId");
+
+    const formatted = answers.map((ans) => ({
+      question: ans.questionId.text,
+      correctOption: ans.questionId.correctOption,
+      selectedOption: ans.selectedOption,
+      isCorrect: ans.selectedOption === ans.questionId.correctOption,
+    }));
+
+    res.status(200).json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Laden der Antworten.", error });
+  }
+};
+
+

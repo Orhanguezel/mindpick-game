@@ -31,7 +31,6 @@ const Header = () => {
       {/* Sağ navigasyon */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Link to="/questions" style={navStyle}>Questions</Link>
-        <Link to="/answer" style={navStyle}>Answers</Link>
         <Link to="/results" style={navStyle}>Results</Link>
 
         {user && (
