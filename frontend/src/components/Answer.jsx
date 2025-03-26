@@ -1,19 +1,28 @@
 import React from "react";
 
 const Answer = ({ answer, isCorrect, feedback }) => {
-    let resultMessage = null;
+  if (isCorrect === undefined) return null;
 
-    if (isCorrect !== undefined) {
-        resultMessage = isCorrect ? "Right answer" : "No, this is not a correct answer";
-    }
+  const resultStyle = {
+    padding: "1rem",
+    marginTop: "1rem",
+    borderRadius: "8px",
+    color: isCorrect ? "#155724" : "#721c24",
+    backgroundColor: isCorrect ? "#d4edda" : "#f8d7da",
+    border: `1px solid ${isCorrect ? "#c3e6cb" : "#f5c6cb"}`,
+  };
 
-    return (
-        <div>
-            <h3>Your answer: {answer}</h3>
-            {resultMessage && <p>{resultMessage}</p>}
-            {feedback && <p>{feedback}</p>}
-        </div>
-    );
+  return (
+    <div style={resultStyle}>
+      <h3>
+        Deine Antwort: <span style={{ fontWeight: "bold" }}>{answer}</span>
+      </h3>
+      <p>
+        {isCorrect ? "✅ Richtig!" : "❌ Falsch!"}
+      </p>
+      {feedback && <p style={{ marginTop: "0.5rem", fontStyle: "italic" }}>{feedback}</p>}
+    </div>
+  );
 };
 
 export default Answer;

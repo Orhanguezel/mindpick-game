@@ -1,26 +1,37 @@
+/* QuestionCard.css */
+
 .question-card {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 8px;
-    max-width: 600px;
-    width: 90%;
-  }
-  
-  .progress-bar {
-    margin-bottom: 10px;
-  }
-  
-  .options {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .options button {
-    margin: 5px;
-  }
-  
-  .points {
-    margin-top: 10px;
-    font-weight: bold;
-  }
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  background-color: #f9f9f9;
+}
+
+.progress-bar {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.options button {
+  margin: 8px 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.points {
+  margin-top: 15px;
+  font-weight: bold;
+}

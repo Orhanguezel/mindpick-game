@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getRandomQuestion, sendAnswer } from "../services/questionService";
 import Answer from "./Answer";
-import "./QuestionCard.css"; // Importiere die CSS-Datei
+import "./QuestionCard.css";
+import { useNavigate } from "react-router-dom";
 
 const QuestionCard = () => {
   const [question, setQuestion] = useState(null);
@@ -10,8 +11,11 @@ const QuestionCard = () => {
   const [isCorrect, setIsCorrect] = useState(undefined);
   const [feedback, setFeedback] = useState(null);
   const [questionNumber, setQuestionNumber] = useState(1);
-  const [totalQuestions, setTotalQuestions] = useState(10); // Beispielanzahl
+  const totalQuestions = 10;
   const [points, setPoints] = useState(0);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchQuestion();
@@ -31,27 +35,40 @@ const QuestionCard = () => {
   };
 
   const handleAnswer = async (selected) => {
+    if (!user) {
+      alert("Bitte logge dich zuerst ein.");
+      return;
+    }
+
     setSelectedAnswer(selected);
     try {
       const response = await sendAnswer({
         questionId: question._id,
         selectedOption: selected,
+        userId: user._id,
       });
+
       setIsCorrect(response.isCorrect);
-      setFeedback(response.feedback);
+      setFeedback(response.feedback || (response.isCorrect ? "✅ Richtig!" : "❌ Falsch!"));
+
       if (response.isCorrect) {
-        setPoints(points + 1); // Annahme: 1 Punkt pro richtige Antwort
+        setPoints((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Fehler beim Senden der Antwort:", error);
-      alert("Fehler beim Senden der Antwort.");
+      alert("Fehler beim Senden.");
       setIsCorrect(null);
-      setFeedback("Fehler beim Senden der Antwort.");
+      setFeedback("Fehler beim Senden.");
     }
   };
 
   const nextQuestion = () => {
-    setQuestionNumber(questionNumber + 1);
+    if (questionNumber >= totalQuestions) {
+      navigate("/results"); // Quiz sonunda sonuç sayfasına yönlendir
+      return;
+    }
+
+    setQuestionNumber((prev) => prev + 1);
     setSelectedAnswer(null);
     setIsCorrect(undefined);
     setFeedback(null);
@@ -63,22 +80,32 @@ const QuestionCard = () => {
   return (
     <div className="question-card">
       <div className="progress-bar">
-        Fortschritt: {questionNumber} / {totalQuestions}
+        Frage {questionNumber} von {totalQuestions}
       </div>
       <h2>{question.text}</h2>
       <div className="options">
         {question.options.map((opt, index) => (
-          <button key={index} onClick={() => handleAnswer(opt)}>
+          <button
+            key={index}
+            onClick={() => handleAnswer(opt)}
+            disabled={!!selectedAnswer}
+          >
             {opt}
           </button>
         ))}
       </div>
+
       {selectedAnswer && (
-        <Answer answer={selectedAnswer} isCorrect={isCorrect} feedback={feedback} />
+        <>
+          <Answer
+            answer={selectedAnswer}
+            isCorrect={isCorrect}
+            feedback={feedback}
+          />
+          <button onClick={nextQuestion}>Nächste Frage</button>
+        </>
       )}
-      {selectedAnswer && questionNumber < totalQuestions && (
-        <button onClick={nextQuestion}>Nächste Frage</button>
-      )}
+
       <div className="points">Punkte: {points}</div>
     </div>
   );
