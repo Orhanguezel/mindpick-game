@@ -1,7 +1,7 @@
-// src/pages/Register.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../services/userService";
+import "../styles/AuthForm.css";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -12,30 +12,20 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+    setMessage("");
 
     try {
-      const res = await fetch("http://localhost:5011/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Registrierung fehlgeschlagen");
-        return;
-      }
-
+      await registerUser({ username, password });
       setMessage("Registrierung erfolgreich! Du wirst weitergeleitet...");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      setError("Netzwerkfehler oder Server nicht erreichbar.");
+      setError(err.message || "Registrierung fehlgeschlagen.");
     }
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div className="auth-container">
       <h2>Registrieren</h2>
       <form onSubmit={handleRegister}>
         <input
@@ -44,14 +34,14 @@ const Register = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-        /><br />
+        />
         <input
           type="password"
           placeholder="Passwort"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        /><br />
+        />
         <button type="submit">Registrieren</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}

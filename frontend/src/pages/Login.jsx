@@ -1,7 +1,7 @@
-// src/pages/Login.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/userService";
+import "../styles/AuthForm.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -11,31 +11,19 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
-      const res = await fetch("http://localhost:5011/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Login fehlgeschlagen");
-        return;
-      }
-
-      // Başarılı giriş
+      const data = await loginUser({ username, password });
       localStorage.setItem("user", JSON.stringify(data.user));
-      navigate("/"); // Anasayfaya yönlendir
+      navigate("/");
     } catch (err) {
-      setError("Netzwerkfehler oder Server nicht erreichbar.");
+      setError(err.message || "Login fehlgeschlagen.");
     }
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div className="auth-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
@@ -44,14 +32,14 @@ const Login = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-        /><br />
+        />
         <input
           type="password"
           placeholder="Passwort"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        /><br />
+        />
         <button type="submit">Einloggen</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}

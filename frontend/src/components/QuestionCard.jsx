@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { getRandomQuestion, sendAnswer } from "../services/questionService";
-import Answer from "./Answer";
-import "./QuestionCard.css";
 import { useNavigate } from "react-router-dom";
+import { getRandomQuestion, sendAnswer } from "../services/questionService";
+import { getStoredUser } from "../utils/localStorage";
+import "../styles/QuestionCard.css";
+
+// Alt bileşen: Soru sonrası geri bildirim
+const SelectedAnswerFeedback = ({ answer, isCorrect, feedback }) => {
+  if (isCorrect === undefined) return null;
+
+  return (
+    <div className={`feedback ${isCorrect ? "correct" : "incorrect"}`}>
+      <strong>Deine Antwort:</strong> {answer}
+      <br />
+      {feedback && <span>{feedback}</span>}
+    </div>
+  );
+};
 
 const QuestionCard = () => {
   const [question, setQuestion] = useState(null);
@@ -11,10 +24,10 @@ const QuestionCard = () => {
   const [isCorrect, setIsCorrect] = useState(undefined);
   const [feedback, setFeedback] = useState(null);
   const [questionNumber, setQuestionNumber] = useState(1);
-  const totalQuestions = 10;
   const [points, setPoints] = useState(0);
+  const totalQuestions = 10;
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getStoredUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,10 +37,10 @@ const QuestionCard = () => {
   const fetchQuestion = async () => {
     setLoading(true);
     try {
-      const fetchedQuestion = await getRandomQuestion();
-      setQuestion(fetchedQuestion);
-    } catch (error) {
-      console.error("Fehler beim Laden der Frage:", error);
+      const fetched = await getRandomQuestion();
+      setQuestion(fetched);
+    } catch (err) {
+      console.error("Fehler beim Laden der Frage:", err);
       alert("Fehler beim Laden der Frage.");
     } finally {
       setLoading(false);
@@ -41,30 +54,27 @@ const QuestionCard = () => {
     }
 
     setSelectedAnswer(selected);
+
     try {
-      const response = await sendAnswer({
+      const res = await sendAnswer({
         questionId: question._id,
         selectedOption: selected,
         userId: user._id,
       });
 
-      setIsCorrect(response.isCorrect);
-      setFeedback(response.feedback || (response.isCorrect ? "✅ Richtig!" : "❌ Falsch!"));
+      setIsCorrect(res.isCorrect);
+      setFeedback(res.feedback || (res.isCorrect ? "✅ Richtig!" : "❌ Falsch!"));
 
-      if (response.isCorrect) {
-        setPoints((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error("Fehler beim Senden der Antwort:", error);
-      alert("Fehler beim Senden.");
-      setIsCorrect(null);
+      if (res.isCorrect) setPoints((prev) => prev + 1);
+    } catch (err) {
+      console.error("Antwortfehler:", err);
       setFeedback("Fehler beim Senden.");
     }
   };
 
   const nextQuestion = () => {
     if (questionNumber >= totalQuestions) {
-      navigate("/results"); // Quiz sonunda sonuç sayfasına yönlendir
+      navigate("/results");
       return;
     }
 
@@ -75,14 +85,18 @@ const QuestionCard = () => {
     fetchQuestion();
   };
 
-  if (loading) return <p>Laden...</p>;
+  if (loading || !question) {
+    return <p className="loading-text">⏳ Frage wird geladen...</p>;
+  }
 
   return (
     <div className="question-card">
       <div className="progress-bar">
         Frage {questionNumber} von {totalQuestions}
       </div>
+
       <h2>{question.text}</h2>
+
       <div className="options">
         {question.options.map((opt, index) => (
           <button
@@ -97,12 +111,14 @@ const QuestionCard = () => {
 
       {selectedAnswer && (
         <>
-          <Answer
+          <SelectedAnswerFeedback
             answer={selectedAnswer}
             isCorrect={isCorrect}
             feedback={feedback}
           />
-          <button onClick={nextQuestion}>Nächste Frage</button>
+          <button className="next-btn" onClick={nextQuestion}>
+            Nächste Frage
+          </button>
         </>
       )}
 
