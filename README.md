@@ -1,168 +1,191 @@
-Elbette! Aşağıda projenin **güncellenmiş ve detaylandırılmış** `README.md` yapısını bulabilirsin. Hem **backend** hem de **frontend** tarafındaki son gelişmeler ve yapılar dahil edilmiştir:
+# 🧠 MindPick - Interaktives Quizspiel
+
+**MindPick** ist ein modernes Multiple-Choice-Quizspiel, bei dem Benutzer Fragen beantworten, Punkte sammeln und ihre Leistung mit anderen vergleichen können. Das Projekt wurde mit einer sauberen **MERN-Architektur (MongoDB, Express, React, Node.js)** entwickelt und ist vollständig responsive.
 
 ---
 
-# 🧠 mindpick-game
+## 📁 Projektstruktur
 
----
+### 🔧 Backend – `./backend`
 
-## 📌 **Projektname:** `MindPick` – Ein interaktives Multiple-Choice-Quizspiel mit Punkte- & Auswertungsfunktion
-
-### 👥 Team: 4 Personen  
-### 🧠 Projektleiter: **Orhan**
-
----
-
-## ✅ **Aufgabenzuweisung**
-
-### 👨‍💼 **Projektleiter – Orhan**  
-- GitHub Repository & Branch-Struktur  
-- Technische Architektur (Frontend + Backend)  
-- Merge-Prozesse & Code Review  
-- Feature-Planung via Issues / GitHub Projects  
-- Teamkoordination & Aufgabenverteilung  
-
----
-
-### 👨‍💻 **Backend – Orhan und Bassam**  
-- MongoDB-Verbindung & Mongoose-Setup  
-- Datenmodelle: `User`, `Question`, `Answer`  
-- Seed-Skripte: Benutzer, Fragen, automatische Antworten  
-- Punktesystem in der Datenbank  
-- Benutzerantworten speichern & Punktzahl live aktualisieren
-- REST API mit Express.js  
-  - `GET /api/questions/random` → Zufällige Frage  
-  - `GET /api/questions` → Alle Fragen  
-  - `POST /api/answers` → Antwort speichern & Punkte prüfen  
-  - `GET /api/answers/:userId` → Alle Antworten eines Users  
-- Error Handling & Statuscodes  
-- Benutzer Punktestand abrufen  
-- Tests der API-Endpunkte (Postman)
-
----
-
-### 👩‍🎨 **Frontend – Dennis und Radoslava**  
-- React + Vite Projektsetup  
-- Quiz-Logik: Fragekarten, Fortschritt, Punkteanzeige  
-- Antwortübertragung via `fetch()`  
-- QuizEnde-Logik & Weiterleitung  
-- Zustandverwaltung über `useState`, `useEffect`
-- Responsive Design mit CSS  
-- Komponentengestaltung: Header, QuestionCard, Leaderboard  
-- Ergebnisanzeige nach Quizabschluss  
-- UX-Verbesserungen (Animationen, Buttons, Feedbackfarben)  
-- Benutzerfreundliche Navigation (Header-Navigation, Logout, etc.)
-
----
-
-## 🧩 **Technische Struktur**
-
-### 🛠️ **Backend**
-- **Node.js + Express.js**
-- **MongoDB + Mongoose**
-- Struktur:
+- Node.js + Express + MongoDB
+- RESTful API mit Mongoose Models
+- Daten-Seeding: Benutzer, Fragen, Antworten
+- Routenstruktur:
   ```
   backend/
-    ├── models/            → User, Question, Answer
-    ├── controllers/       → Logic für Anfragen
-    ├── routes/            → /api/users, /api/questions, /api/answers
-    ├── seederUser.js      → Dummy-User
-    ├── seederQuestion.js  → Dummy-Fragen
-    ├── seederAnswer.js    → Automatisch Antworten einfügen
-    └── server.js          → Server-Setup
+  ├── controllers/
+  │   ├── userController.js
+  │   ├── questionController.js
+  │   └── answerController.js
+  ├── models/
+  │   ├── User.js
+  │   ├── Question.js
+  │   └── Answer.js
+  ├── router/
+  │   ├── userRoutes.js
+  │   ├── questionRoutes.js
+  │   ├── answerRoutes.js
+  │   └── index.js
+  ├── utils/
+  │   └── connect.js
+  ├── seederUser.js
+  ├── seederQuestion.js
+  ├── seederAnswer.js
+  └── server.js
   ```
 
-### 💻 **Frontend**
-- **React 18 + Vite**
-- **React Router DOM** für Navigation  
-- **Fetch API** für Datenabruf & Antwortübermittlung  
-- Struktur:
-  ```
-  src/
-    ├── pages/             → Home, Login, Register, Results
-    ├── components/        → QuestionCard, Answer, Header, QuizSummary
-    ├── services/          → API-Fetch-Helper
-    └── App.jsx            → Routing Setup
-  ```
-
 ---
 
-## ✅ **API-Endpunktübersicht**
+### 💻 Frontend – `./frontend`
 
-> 🟢 **Base URL:** `http://localhost:5011/api`
+- React + Vite + React Router
+- Modular aufgebaut mit `pages`, `components`, `styles`, `services`, `utils`
+- Zustandverwaltung mit `useState`, `useEffect`
 
----
-
-### 👤 **[Benutzer-Routen]** `/api/users`
-
-| Methode | Endpoint                | Beschreibung                                       |
-|---------|-------------------------|----------------------------------------------------|
-| POST    | `/users/register`       | Benutzer registrieren                              |
-| POST    | `/users/login`          | Login ohne Token                                   |
-| GET     | `/users/:userId/score`  | Punktestand abrufen                                |
-| GET     | `/users`                | Alle Benutzer auflisten (inkl. Punktestand)        |
-
----
-
-### ❓ **[Fragen-Routen]** `/api/questions`
-
-| Methode | Endpoint               | Beschreibung                                         |
-|---------|------------------------|------------------------------------------------------|
-| GET     | `/questions/random`    | Eine zufällige Frage abrufen                         |
-| GET     | `/questions`           | Alle Fragen abrufen                                  |
-| POST    | `/questions`           | Neue Frage erstellen                                 |
-
----
-
-### ✅ **[Antwort-Routen]** `/api/answers`
-
-| Methode | Endpoint                    | Beschreibung                                                            |
-|---------|-----------------------------|-------------------------------------------------------------------------|
-| POST    | `/answers`                  | Antwort speichern & Punktestand aktualisieren                          |
-| GET     | `/answers/:userId`          | Alle Antworten eines Benutzers abrufen                                 |
-
----
-
-## 📜 Beispiel: Antwort senden
-
-```json
-POST /api/answers
-
-{
-  "questionId": "65f0f9e21450f54a7c123456",
-  "userId": "65f1050a1450f54a7c789abc",
-  "selectedOption": "Berlin"
-}
+```
+frontend/src/
+├── assets/
+├── components/
+│   ├── Header.jsx
+│   ├── Footer.jsx
+│   ├── Button.jsx
+│   └── QuestionCard.jsx
+├── layout/
+│   └── Layout.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── Login.jsx
+│   ├── Register.jsx
+│   ├── Results.jsx
+│   └── Answer.jsx
+├── services/
+│   ├── userService.js
+│   ├── questionService.js
+│   └── answerService.js
+├── styles/
+│   ├── AuthForm.css
+│   ├── Home.css
+│   ├── Results.css
+│   └── QuestionCard.css
+├── utils/
+│   └── localStorage.js
+├── App.jsx
+└── main.jsx
 ```
 
 ---
 
-## 🖥️ Beispiel-Frontend-Flow
+## 🚀 Features
 
-1. User öffnet `/` → Willkommen + Login/Register Button  
-2. Nach Login → "Quiz starten"-Button  
-3. `/questions` zeigt Fragen nacheinander  
-4. Nach 10 Fragen → automatische Anzeige:
-   - Punkte
-   - Bestehende Antworten
-   - Leaderboard  
-5. `/results` → Ergebnisse jederzeit erneut aufrufbar
-
----
-
-## 🔐 Authentifizierung (Basic)
-
-- Kein JWT/Token-System (nur localStorage mit `userId`)  
-- Für produktive Nutzung JWT dringend empfohlen  
-- Backend ist bereit für Auth-Upgrade (Modularisierung vorhanden)
+✅ Benutzerregistrierung & Login  
+✅ Dynamische Frageauswahl  
+✅ Punkteberechnung pro Antwort  
+✅ Leaderboard & Auswertung  
+✅ Antwort-Historie pro Benutzer  
+✅ Sauberes Layout & Responsiveness  
+✅ Lokaler Auth (localStorage)  
+✅ Seeding-Skripte für Dummy-Daten  
+✅ Modularer Code & File Separation  
 
 ---
 
-## 🚀 Weitere Features (optional / geplant)
+## 🔗 API-Endpunkte (Base URL: `http://localhost:5011/api`)
 
-- JWT-Login & geschützte Routen  
+### 👤 Benutzer (`/api/users`)
+| Methode | Endpoint                | Beschreibung                        |
+|--------|--------------------------|-------------------------------------|
+| POST   | `/users/register`        | Benutzer registrieren               |
+| POST   | `/users/login`           | Benutzer einloggen                  |
+| GET    | `/users`                 | Alle Benutzer inkl. Punkte          |
+| GET    | `/users/:userId/score`   | Punktestand eines Benutzers         |
+
+### ❓ Fragen (`/api/questions`)
+| Methode | Endpoint             | Beschreibung                       |
+|---------|----------------------|------------------------------------|
+| GET     | `/questions`         | Alle Fragen anzeigen                |
+| GET     | `/questions/random`  | Eine zufällige Frage abrufen        |
+
+### ✅ Antworten (`/api/answers`)
+| Methode | Endpoint                   | Beschreibung                              |
+|---------|----------------------------|-------------------------------------------|
+| POST    | `/answers`                 | Antwort speichern & Punkte berechnen     |
+| GET     | `/answers/:userId`         | Alle Antworten eines Benutzers            |
+
+---
+
+## 🖼️ Beispielablauf im Frontend
+
+1. Startseite → Willkommen, Login/Register  
+2. Nach Login → Button "Quiz starten"  
+3. `/questions` → Frage für Frage beantworten  
+4. Nach 10 Fragen → Weiterleitung zu `/results`  
+   - Punktestand + Bestenliste  
+   - Link zur Detailseite `/answers`
+
+---
+
+## 🧪 Testdaten (Seeding)
+
+Du kannst das Backend initial mit Dummy-Daten füllen:
+
+```bash
+# Benutzer:
+node backend/seederUser.js
+
+# Fragen:
+node backend/seederQuestion.js
+
+# Antworten (zufällig):
+node backend/seederAnswer.js
+```
+
+---
+
+## 📦 Installation & Start
+
+### 1️⃣ Backend starten
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+### 2️⃣ Frontend starten
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🛡️ Hinweise zur Authentifizierung
+
+- Aktuell basiert das Login auf localStorage ohne Token
+- Für eine produktive App wird JWT dringend empfohlen
+
+---
+
+## ✨ Geplante Erweiterungen
+
+- JWT & geschützte Routen  
+- Admin-Panel für Fragenverwaltung  
+- Zeitbasierte Punkte (Speed-Bonus)  
 - Frage-Schwierigkeitsgrade  
-- Admin-Modul zur Fragenspeicherung  
-- Antwort-Zeitmessung & Zeitbonus  
-- Dark-Mode & Sprachumschaltung
+- Dark Mode / Mehrsprachigkeit  
 
+
+
+## 👨‍💼 Projektleitung & Umsetzung
+
+| Name    | Rolle             |
+|---------|-------------------|
+| Orhan   | Fullstack Dev, PM |
+| Bassam  | Backend Dev       |
+| Dennis  | Frontend Dev      |
+| Radoslava | UI/UX & Frontend |
+
+---
+
+## © 2025 – MindPick Game Team
