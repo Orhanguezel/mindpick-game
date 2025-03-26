@@ -2,7 +2,7 @@
 
 ---
 
-## 📌 **Projektname:** `MindPick` – Ein einfaches Zwei-Auswahl-Quizspiel  
+## 📌 **Projektname:** `MindPick` – Ein einfaches Multiple-Choice-Quizspiel  
 ### 👥 Team: 4 Personen  
 ### 🧠 Projektleiter: Orhan
 
@@ -10,7 +10,7 @@
 
 ## ✅ **Aufgabenzuweisung**
 
-### 🧑‍💼 **Projektleiter (Orhan)**  
+### 👨‍💼 **Projektleiter (Orhan)**  
 - Repository-Verwaltung (GitHub)  
 - Technische Struktur & Architektur  
 - Code-Reviews und Merge-Prozesse  
@@ -19,43 +19,98 @@
 
 ---
 
-### 👨‍💻 **Person 1 – Backend: Datenmodellierung & DB-Verbindung**
+### 👨‍💻 **Backend: Orhan**  
 - MongoDB-Verbindung einrichten  
-- Datenmodelle erstellen: `Question`, `Answer`  
-- Beispiel-Fragen in der Datenbank speichern (Seed-Skript)  
-- .env und Konfiguration vorbereiten
+- Datenmodelle erstellen: `User`, `Question`, `Answer`  
+- Seed-Skripte erstellen (User, Frage, Antwort)  
+- Punktesystem im Modell integrieren  
+- Benutzer-Punktzahl berechnen und aktualisieren
 
----
-
-### 👩‍💻 **Person 2 – Backend: API-Routen & Controller**
-- REST API erstellen mit Express.js  
+### 👨‍💻 **Backend: Bassam**  
+- REST API mit Express.js entwickeln  
   - `GET /api/questions/random` → zufällige Frage  
-  - `POST /api/answers` → Antwort speichern  
-- Controller-Logik schreiben  
-- Fehlerbehandlung und Statuscodes korrekt implementieren
+  - `POST /api/answers` → Antwort speichern & Punktzahl prüfen  
+  - `GET /api/users/:id/score` → Punktestand abrufen  
+- Error Handling und Statuscodes korrekt implementieren
+- Unit Tests für API-Endpunkte (optional)
 
 ---
 
-### 👨‍🎨 **Person 3 – Frontend: Benutzeroberfläche & API-Anbindung**
-- Einfache HTML/CSS/JS- oder React-Oberfläche  
-- Frage und zwei Antwortoptionen anzeigen  
-- Button-Click → Antwort per `fetch` oder `axios` an Backend senden  
-- Erfolgs- oder Fehlermeldung anzeigen
+### 👩‍🎨 **Frontend: Dennis**  
+- Benutzeroberfläche mit React + Vite  
+- Fragen und Antworten anzeigen (4 Optionen pro Frage)  
+- Antwort senden per `fetch()`  
+- Punktzahl anzeigen  
+- Loading-/Fehlerstatus behandeln
+
+### 👩‍🎨 **Frontend: Radoslava**  
+- Styling & Responsiveness  
+- Komponentendesign (Fragekarte, Ergebnisanzeige etc.)  
+- UX-Verbesserung (z. B. Fortschrittsanzeige, Animationen)  
+- Punktesystem visuell darstellen  
+- Optionale Komponenten wie Leaderboard oder Quiz-Statistik
 
 ---
 
-### 👩‍🎨 **Person 4 – Frontend: UX/UI & Styling**
-- Layout und visuelle Darstellung gestalten (responsive)  
-- Farbschema, Button-Stile, Fonts, etc.  
-- Feedback-Nachricht nach Antwortauswahl  
-- User Experience verbessern (z. B. Loading-Status, Animationen)
+## 🔧 **Technische Struktur (Backend)**
+
+- **Node.js + Express** als Webserver  
+- **MongoDB + Mongoose** als Datenbank  
+- **Drei Hauptmodelle**:
+  - `User`: username, password, score
+  - `Question`: text, options (4), correctOption
+  - `Answer`: questionId, userId, selectedOption, isCorrect
+- Seed-Skripte: Benutzer, Fragen, Antworten generieren
+- Punktzahl wird automatisch überprüft und beim Speichern erhöht
 
 ---
 
-## 🔧 **Zusätzliche Tools & Struktur**
-- GitHub Branch-Konvention: `feature/xyz`, `bugfix/xyz`  
-- Pull Requests mit Code Review  
-- GitHub Project-Board (To Do / In Progress / Done)  
-- Issues pro Feature erstellen  
+## ✅ **API-Endpunktübersicht**
+
+> 🟢 **Basis-URL:** `http://localhost:5011/api`
+
+### 👤 **[Benutzer-Routen]** `/api/users`
+
+| Methode | Endpunkt                | Beschreibung                                      |
+|---------|-------------------------|---------------------------------------------------|
+| POST    | `/users/register`       | Neuen Benutzer registrieren                      |
+| POST    | `/users/login`          | Benutzer-Login (ohne Passwortverschlüsselung)    |
+| GET     | `/users/:userId/score`  | Punktzahl eines bestimmten Benutzers abrufen     |
+| GET     | `/users`                | Alle Benutzer auflisten (ohne Passwortdaten)     |
+
+### ❓ **[Fragen-Routen]** `/api/questions`
+
+| Methode | Endpunkt               | Beschreibung                                             |
+|---------|------------------------|----------------------------------------------------------|
+| GET     | `/questions/random`    | Zufällige Frage abrufen                                  |
+| GET     | `/questions`           | Alle Fragen abrufen                                      |
+| POST    | `/questions`           | Neue Frage erstellen (Fragetext, 4 Optionen, richtige)   |
+
+### ✅ **[Antwort-Routen]** `/api/answers`
+
+| Methode | Endpunkt          | Beschreibung                                                   |
+|---------|-------------------|----------------------------------------------------------------|
+| POST    | `/answers`        | Antwort absenden (prüft Richtigkeit und erhöht ggf. Punktzahl) |
 
 ---
+
+## 📜 Beispiel: Antwort senden (`/api/answers`)
+
+```json
+{
+  "questionId": "65f0f9e21450f54a7c123456",
+  "userId": "65f1050a1450f54a7c789abc",
+  "selectedOption": "Berlin"
+}
+```
+
+---
+
+## 🔐 Authentifizierung
+> Momentan wird keine Authentifizierung verwendet (z. B. kein JWT). 
+> Benutzer werden über `userId` direkt identifiziert. 
+> 
+> Für den produktiven Einsatz empfiehlt sich die Integration von Token-basiertem Login (JWT).
+
+---
+

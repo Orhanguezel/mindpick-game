@@ -1,33 +1,68 @@
 import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-
 
 export const registerUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const existing = await User.findOne({ username });
-    if (existing) return res.status(400).json({ message: "Benutzer existiert bereits." });
 
-    const hashed = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashed });
+    const existing = await User.findOne({ username });
+    if (existing) {
+      return res.status(400).json({ message: "Benutzer existiert bereits." });
+    }
+
+    const newUser = new User({ username, password });
     await newUser.save();
-    res.status(201).json({ message: "Registrierung erfolgreich!" });
+
+    res.status(201).json({ message: "Registrierung erfolgreich!", user: newUser });
   } catch (error) {
     res.status(500).json({ message: "Fehler bei der Registrierung.", error });
   }
 };
 
+
 export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: "Benutzer nicht gefunden." });
 
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return res.status(401).json({ message: "Falsches Passwort." });
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Falsches Passwort." });
+    }
 
-    res.status(200).json({ message: "Login erfolgreich!" });
+    res.status(200).json({ message: "Login erfolgreich!", user });
   } catch (error) {
     res.status(500).json({ message: "Fehler beim Login.", error });
   }
 };
+
+
+export const getUserScore = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Benutzer nicht gefunden." });
+
+    res.status(200).json({
+      username: user.username,
+      score: user.score,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Abrufen des Punktestands", error });
+  }
+};
+
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, { password: 0 });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Laden der Benutzer", error });
+  }
+};
+
+
