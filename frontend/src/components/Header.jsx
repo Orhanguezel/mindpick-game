@@ -21,14 +21,14 @@ const Header = () => {
       top: 0,
       zIndex: 1000,
     }}>
-      {/* Sol logo */}
+   
       <div>
         <Link to="/" style={{ color: "#fff", textDecoration: "none", fontSize: "1.4rem", fontWeight: "bold" }}>
           🧠 MindPick
         </Link>
       </div>
 
-      {/* Sağ navigasyon */}
+
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Link to="/questions" style={navStyle}>Questions</Link>
         <Link to="/results" style={navStyle}>Results</Link>

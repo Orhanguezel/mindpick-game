@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "710c7aa8-f9ce-49b3-ab18-289206e949a1",
+		"name": "Mindpink-game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20528167",
+		"_collection_link": "https://www.postman.com/red-eclipse-24199/workspace/orhan/collection/20528167-710c7aa8-f9ce-49b3-ab18-289206e949a1?action=share&source=collection_link&creator=20528167"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"orhan\",\n    \"password\":123456\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{mindpick}}users/register",
+							"host": [
+								"{{mindpick}}users"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"orhan\",\n    \"password\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{mindpick}}users/login",
+							"host": [
+								"{{mindpick}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mindpick}}users",
+							"host": [
+								"{{mindpick}}users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "question",
+			"item": [
+				{
+					"name": "getAllQuestions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mindpick}}questions/",
+							"host": [
+								"{{mindpick}}questions"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRandomQuestion",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mindpick}}questions/random",
+							"host": [
+								"{{mindpick}}questions"
+							],
+							"path": [
+								"random"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createQuestion",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"Welches Tier ist ein Säugetier?\",\n  \"options\": [\"Hai\", \"Frosch\", \"Elefant\", \"Krokodil\"],\n  \"correctOption\": \"Elefant\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{mindpick}}questions",
+							"host": [
+								"{{mindpick}}questions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "answer",
+			"item": [
+				{
+					"name": "submitAnswer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"questionId\": \"67e3e2882759ff07ed06e5cf\",\n  \"userId\": \"67e3eac864e395095ba24a1c\",\n  \"selectedOption\": \"Berlin\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{mindpick}}answers",
+							"host": [
+								"{{mindpick}}answers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getByUserAnswers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mindpick}}answers/67e3f72f68a343722142c883",
+							"host": [
+								"{{mindpick}}answers"
+							],
+							"path": [
+								"67e3f72f68a343722142c883"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
