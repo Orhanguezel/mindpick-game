@@ -36,7 +36,6 @@ async function seedAnswers() {
       if (isCorrect) userScore++;
     }
 
-    // ✅ Toplam puanı kullanıcıya yaz
     await User.findByIdAndUpdate(user._id, { score: userScore });
   }
 
