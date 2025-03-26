@@ -1,0 +1,26 @@
+.question-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+  }
+  
+  .progress-bar {
+    margin-bottom: 10px;
+  }
+  
+  .options {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .options button {
+    margin: 5px;
+  }
+  
+  .points {
+    margin-top: 10px;
+    font-weight: bold;
+  }
